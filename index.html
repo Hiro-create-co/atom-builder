@@ -1813,7 +1813,7 @@ function recordGameStats() {
 // SECTION 11: Input (mouse + touch optimized)
 // ============================================================
 function initInput() {
-    // Mouse
+    // Mouse — click to drop (desktop behavior unchanged)
     canvas.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
         GS.dropX = (e.clientX - rect.left) / rect.width * logicalW;
@@ -1824,25 +1824,35 @@ function initInput() {
         }
     });
 
-    // Touch — optimized for mobile
-    let lastTouchX = null;
+    // Touch — hold, drag to position, release to drop
+    let touchHolding = false;
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
         GS.dropX = (touch.clientX - rect.left) / rect.width * logicalW;
-        lastTouchX = touch.clientX;
-        if (GS.phase === 'playing' && GS.canDrop && !GS.popup && !GS.chainOpen) {
-            dropParticle();
-        }
+        touchHolding = true;
     }, { passive: false });
 
     canvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
+        if (!touchHolding) return;
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
         GS.dropX = (touch.clientX - rect.left) / rect.width * logicalW;
     }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        if (touchHolding && GS.phase === 'playing' && GS.canDrop && !GS.popup && !GS.chainOpen) {
+            dropParticle();
+        }
+        touchHolding = false;
+    }, { passive: false });
+
+    canvas.addEventListener('touchcancel', () => {
+        touchHolding = false;
+    });
 
     // Prevent double-tap zoom on mobile
     document.addEventListener('dblclick', (e) => e.preventDefault());
@@ -2115,12 +2125,17 @@ function resizeCanvas() {
     logicalW = rect.width;
     logicalH = rect.height;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const sideMargin = logicalW * 0.15;
+
+    // Responsive container: fill available height on mobile portrait
+    const isPortrait = logicalH > logicalW;
+    const sideMargin = logicalW * (isPortrait ? 0.06 : 0.15);
     CONTAINER_LEFT = sideMargin;
     CONTAINER_RIGHT = logicalW - sideMargin;
-    CONTAINER_BOTTOM = logicalH - logicalW * 0.04;
+    CONTAINER_BOTTOM = logicalH - logicalW * 0.03;
     const containerW = CONTAINER_RIGHT - CONTAINER_LEFT;
-    const targetH = containerW * 1.5;
+    // On portrait screens, use available height instead of fixed ratio
+    const maxH = CONTAINER_BOTTOM - logicalH * 0.02;
+    const targetH = isPortrait ? Math.min(maxH, containerW * 1.8) : containerW * 1.5;
     CONTAINER_TOP = CONTAINER_BOTTOM - targetH;
 }
 
