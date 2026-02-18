@@ -148,6 +148,10 @@ html, body {
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     transition: opacity 0.4s;
 }
+#menu-overlay {
+    background: radial-gradient(ellipse at 50% 40%, rgba(6,6,26,0.72), rgba(6,6,26,0.55));
+    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+}
 .overlay.hidden { display: none; }
 
 /* ─── Menu Screen ─── */
@@ -1176,6 +1180,99 @@ function renderAnimations() {
 // ============================================================
 let stars = [];
 let nebulae = [];
+let menuParticles = [];
+
+function initMenuParticles() {
+    menuParticles = [];
+    const count = 24;
+    for (let i = 0; i < count; i++) {
+        const level = Math.floor(Math.random() * CHAIN.length);
+        const baseR = 12 + Math.random() * 22;
+        menuParticles.push({
+            x: Math.random(),
+            y: Math.random() * 1.4 - 0.2,
+            level: level,
+            radius: baseR,
+            speed: 0.012 + Math.random() * 0.022,
+            drift: (Math.random() - 0.5) * 0.3,
+            driftSpeed: 0.3 + Math.random() * 0.5,
+            rotPhase: Math.random() * Math.PI * 2,
+            alpha: 0.35 + Math.random() * 0.4,
+            glowPhase: Math.random() * Math.PI * 2,
+        });
+    }
+    menuParticles.sort((a, b) => a.radius - b.radius);
+}
+
+function renderMenuParticles(t) {
+    for (const mp of menuParticles) {
+        mp.y += mp.speed / 60;
+        const driftX = Math.sin(t * mp.driftSpeed + mp.rotPhase) * mp.drift * 0.01;
+        mp.x += driftX;
+        if (mp.y > 1.15) {
+            mp.y = -0.15;
+            mp.x = Math.random();
+            mp.level = Math.floor(Math.random() * CHAIN.length);
+            mp.radius = 12 + Math.random() * 22;
+            mp.alpha = 0.35 + Math.random() * 0.4;
+        }
+        if (mp.x < -0.1) mp.x = 1.1;
+        if (mp.x > 1.1) mp.x = -0.1;
+
+        const info = CHAIN[mp.level];
+        const px = mp.x * logicalW;
+        const py = mp.y * logicalH;
+        const r = mp.radius;
+        const col = hexToRGB(info.color);
+        const baseAlpha = mp.alpha;
+
+        ctx.save();
+        ctx.globalAlpha = baseAlpha;
+
+        // Aura
+        const auraR = r * 1.6;
+        const auraG = ctx.createRadialGradient(px, py, r * 0.3, px, py, auraR);
+        auraG.addColorStop(0, hexToRGBA(info.color, 0.12));
+        auraG.addColorStop(1, 'transparent');
+        ctx.fillStyle = auraG;
+        ctx.beginPath();
+        ctx.arc(px, py, auraR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sphere body
+        const hlX = px - r * 0.35, hlY = py - r * 0.35;
+        const bodyG = ctx.createRadialGradient(hlX, hlY, r * 0.05, px, py, r);
+        bodyG.addColorStop(0, `rgba(${Math.min(255,col.r+100)},${Math.min(255,col.g+100)},${Math.min(255,col.b+100)},0.9)`);
+        bodyG.addColorStop(0.3, info.color);
+        bodyG.addColorStop(1, `rgba(${Math.floor(col.r*0.3)},${Math.floor(col.g*0.3)},${Math.floor(col.b*0.3)},0.7)`);
+        ctx.fillStyle = bodyG;
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Specular
+        const specX = px - r * 0.3, specY = py - r * 0.3;
+        const specG = ctx.createRadialGradient(specX, specY, 0, specX, specY, r * 0.4);
+        specG.addColorStop(0, 'rgba(255,255,255,0.45)');
+        specG.addColorStop(1, 'transparent');
+        ctx.fillStyle = specG;
+        ctx.beginPath();
+        ctx.arc(specX, specY, r * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Symbol
+        const fontSize = Math.max(7, r * 0.55);
+        ctx.font = `bold ${fontSize}px -apple-system, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.fillText(info.symbol, px + 0.5, py + 0.5);
+        ctx.fillStyle = '#fff';
+        ctx.fillText(info.symbol, px, py);
+
+        ctx.restore();
+    }
+}
 function initStars() {
     stars = [];
     for (let i = 0; i < 80; i++) {
@@ -1213,6 +1310,9 @@ function render(timestamp) {
     }
 
     renderBackground(t);
+    if (GS.phase === 'menu' || GS.phase === 'gameover') {
+        renderMenuParticles(t);
+    }
     renderContainer(t);
     if (GS.phase === 'playing' || GS.phase === 'gameover_anim') {
         renderGameOverLine(t);
@@ -2241,6 +2341,7 @@ function init() {
     loadData();
     resizeCanvas();
     initStars();
+    initMenuParticles();
     window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
     initInput();
     updateCollectionUI();
