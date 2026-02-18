@@ -1182,19 +1182,24 @@ let stars = [];
 let nebulae = [];
 let menuParticles = [];
 
+function menuParticleX() {
+    // Bias toward edges: 0-0.3 or 0.7-1.0 (avoid center text area)
+    if (Math.random() < 0.5) return Math.random() * 0.32;
+    return 0.68 + Math.random() * 0.32;
+}
 function initMenuParticles() {
     menuParticles = [];
-    const count = 26;
+    const count = 14;
     for (let i = 0; i < count; i++) {
         const level = Math.floor(Math.random() * CHAIN.length);
         const baseR = 16 + Math.random() * 28;
         menuParticles.push({
-            x: Math.random(),
+            x: menuParticleX(),
             y: Math.random() * 1.4 - 0.2,
             level: level,
             radius: baseR,
             speed: 0.012 + Math.random() * 0.022,
-            drift: (Math.random() - 0.5) * 0.3,
+            drift: (Math.random() - 0.5) * 0.15,
             driftSpeed: 0.3 + Math.random() * 0.5,
             rotPhase: Math.random() * Math.PI * 2,
             alpha: 0.55 + Math.random() * 0.4,
@@ -1211,7 +1216,7 @@ function renderMenuParticles(t) {
         mp.x += driftX;
         if (mp.y > 1.15) {
             mp.y = -0.15;
-            mp.x = Math.random();
+            mp.x = menuParticleX();
             mp.level = Math.floor(Math.random() * CHAIN.length);
             mp.radius = 16 + Math.random() * 28;
             mp.alpha = 0.55 + Math.random() * 0.4;
