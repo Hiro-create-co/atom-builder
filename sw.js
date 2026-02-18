@@ -1,9 +1,10 @@
 // Atom Builder Service Worker — Offline support
-const CACHE_NAME = 'atom-builder-v1';
+const CACHE_NAME = 'atom-builder-v2';
 const ASSETS = [
     './',
     './index.html',
     './manifest.json',
+    './og-image.png',
 ];
 
 // Install: cache core assets

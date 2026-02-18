@@ -7,6 +7,18 @@
 <meta name="description" content="粒子を落として元素を作ろう！ Drop particles and build atoms!">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- OGP -->
+<meta property="og:title" content="Atom Builder - 原子ビルダー">
+<meta property="og:description" content="粒子を落として元素を作ろう！ Drop particles and build atoms!">
+<meta property="og:image" content="https://atom-builder.vercel.app/og-image.png">
+<meta property="og:url" content="https://atom-builder.vercel.app">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Atom Builder">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Atom Builder - 原子ビルダー">
+<meta name="twitter:description" content="粒子を落として元素を作ろう！ Drop particles and build atoms!">
+<meta name="twitter:image" content="https://atom-builder.vercel.app/og-image.png">
 <link rel="manifest" href="manifest.json">
 <title>Atom Builder - 原子ビルダー</title>
 <style>
@@ -242,6 +254,33 @@ html, body {
 }
 @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 @keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+/* ─── Tutorial overlay ─── */
+#tutorial-overlay {
+    position: absolute; inset: 0; z-index: 25;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: rgba(6,6,26,0.92);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    animation: fadeIn 0.4s ease;
+    cursor: pointer; gap: 18px; padding: 30px;
+    text-align: center;
+}
+#tutorial-overlay.hidden { display: none; }
+.tut-step {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 14px 20px;
+    max-width: 320px; width: 100%;
+}
+.tut-icon { font-size: 28px; flex-shrink: 0; }
+.tut-text { font-size: 13px; color: #aab; line-height: 1.5; text-align: left; }
+.tut-text strong { color: #fff; }
+.tut-dismiss {
+    font-size: 11px; color: #556; letter-spacing: 2px; margin-top: 8px;
+    animation: pulse 2s ease infinite;
+}
+
 /* Stats row on game over */
 .go-stats-extra {
     display: flex; gap: 16px; margin: 4px 0 6px; opacity: 0.5; font-size: 10px; color: #667;
@@ -410,6 +449,28 @@ html, body {
         <div id="chain-list"></div>
         <button id="chain-close">閉じる</button>
     </div>
+
+    <!-- Tutorial -->
+    <div id="tutorial-overlay" class="hidden">
+        <div style="font-family:'Orbitron',sans-serif;font-size:16px;color:#88aaff;letter-spacing:3px;font-weight:700;">HOW TO PLAY</div>
+        <div class="tut-step">
+            <div class="tut-icon">👆</div>
+            <div class="tut-text"><strong>タッチ長押し</strong>で粒子をホールド<br>指をスライドして<strong>位置を調整</strong></div>
+        </div>
+        <div class="tut-step">
+            <div class="tut-icon">⬇️</div>
+            <div class="tut-text"><strong>指を離す</strong>と粒子が落下！</div>
+        </div>
+        <div class="tut-step">
+            <div class="tut-icon">💥</div>
+            <div class="tut-text"><strong>同じもの同士</strong>がくっつくと<br>合体して<strong>次のレベルに進化</strong>！</div>
+        </div>
+        <div class="tut-step">
+            <div class="tut-icon">⚛️</div>
+            <div class="tut-text">q → p⁺ → n⁰ → e⁻ → H → He → … → <strong>Ne</strong></div>
+        </div>
+        <div class="tut-dismiss">タップして閉じる</div>
+    </div>
 </div>
 
 <script>
@@ -524,6 +585,10 @@ function playSound(freq, dur, type, vol) {
         o.connect(g); g.connect(audioCtx.destination);
         o.start(); o.stop(audioCtx.currentTime + dur);
     } catch (e) {}
+}
+
+function vibrate(pattern) {
+    try { navigator.vibrate && navigator.vibrate(pattern); } catch (e) {}
 }
 
 function playDropSound(level) {
@@ -864,6 +929,7 @@ function checkMerges() {
                     GS.score += 1000;
                     GS.totalMerges++;
                     playNeonSound();
+                    vibrate([30, 50, 30, 50, 30]);
                     GS.shakeAmount = 12;
                     spawnAnimation('neon_burst', mx, my, 1.2, { color: CHAIN[a.level].color });
                     spawnAnimation('score_float', mx, my - 30, 0.8, { text: '+1000', color: '#ff44ff', size: 22 });
@@ -897,6 +963,8 @@ function checkMerges() {
                     } else {
                         playMergeSound(newLevel);
                     }
+                    // Haptic feedback
+                    vibrate(newLevel >= 5 ? [20, 30, 20] : newLevel >= 3 ? 15 : 8);
 
                     // First discovery
                     if (!GS.collection[newLevel]) {
@@ -1957,6 +2025,26 @@ function startGame() {
     renderNextParticle();
     // Start BGM
     toggleBGM(true);
+    // Show tutorial on first play
+    showTutorialIfFirst();
+}
+
+function showTutorialIfFirst() {
+    try {
+        if (localStorage.getItem('atombuilder2_tut')) return;
+    } catch (e) {}
+    GS.canDrop = false;
+    const tut = document.getElementById('tutorial-overlay');
+    tut.classList.remove('hidden');
+    function dismiss() {
+        tut.classList.add('hidden');
+        tut.removeEventListener('click', dismiss);
+        tut.removeEventListener('touchstart', dismiss);
+        GS.canDrop = true;
+        try { localStorage.setItem('atombuilder2_tut', '1'); } catch (e) {}
+    }
+    tut.addEventListener('click', dismiss);
+    tut.addEventListener('touchstart', dismiss);
 }
 
 function checkGameOver() {
