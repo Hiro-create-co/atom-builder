@@ -2169,27 +2169,21 @@ function init() {
 async function shareScore() {
     const maxLvSym = GS.maxLevelReached < CHAIN.length ? CHAIN[GS.maxLevelReached].symbol : '?';
     const maxLvName = GS.maxLevelReached < CHAIN.length ? CHAIN[GS.maxLevelReached].nameJa : '?';
+    const levelBar = CHAIN.slice(0, GS.maxLevelReached + 1).map(c => c.symbol).join(' → ');
     const text = [
         '⚛️ Atom Builder',
         `Score: ${GS.score}`,
         `Max: ${maxLvSym} (${maxLvName})`,
+        levelBar,
         `Merges: ${GS.totalMerges} | Chain: ×${GS.maxCombo}`,
         '',
         'https://atom-builder.vercel.app',
     ].join('\n');
 
-    // Try Web Share API first (mobile)
+    // Try Web Share API (text only — no image for clean sharing)
     if (navigator.share) {
         try {
-            // Generate screenshot
-            const shareCanvas = document.createElement('canvas');
-            const sCtx = shareCanvas.getContext('2d');
-            shareCanvas.width = canvas.width;
-            shareCanvas.height = canvas.height;
-            sCtx.drawImage(canvas, 0, 0);
-            const blob = await new Promise(r => shareCanvas.toBlob(r, 'image/png'));
-            const file = new File([blob], 'atom-builder-score.png', { type: 'image/png' });
-            await navigator.share({ text, files: [file] });
+            await navigator.share({ text });
             return;
         } catch (e) {
             // Fall through to clipboard
