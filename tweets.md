@@ -1,6 +1,6 @@
 # 元素ドロップ (Genso Drop) X/Twitter 宣伝投稿 (3日分 / 9投稿)
 
-URL: https://atom-builder.vercel.app
+URL: https://genso-drop.vercel.app
 
 ---
 
@@ -21,7 +21,7 @@ URL: https://atom-builder.vercel.app
 
 **スレッド返信:**
 > 遊んでみてね
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 
 ---
 
@@ -39,7 +39,7 @@ URL: https://atom-builder.vercel.app
 > #バイブコーディング #ゲーム開発
 
 **スレッド返信:**
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 > PWA対応なのでホーム画面に追加するとアプリ感覚で遊べます
 
 ---
@@ -62,7 +62,7 @@ URL: https://atom-builder.vercel.app
 
 **スレッド返信:**
 > Claude Codeと一緒にバイブコーディングで作りました
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 
 ---
 
@@ -87,7 +87,7 @@ URL: https://atom-builder.vercel.app
 > 各元素を発見するとトリビアも表示されます
 > 「ヘリウム → 太陽を動かすエネルギー源」
 > 「ベリリウム → エメラルドの成分」
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 
 ---
 
@@ -107,7 +107,7 @@ URL: https://atom-builder.vercel.app
 
 **スレッド返信:**
 > 完成したゲームはこちら
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 > ソースコードはGitHubにもあります
 
 ---
@@ -128,7 +128,7 @@ URL: https://atom-builder.vercel.app
 
 **スレッド返信:**
 > スマホだと振動フィードバックもあります
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 
 ---
 
@@ -152,7 +152,7 @@ URL: https://atom-builder.vercel.app
 
 **スレッド返信:**
 > 全11種類の粒子・元素をコレクションできます
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 
 ---
 
@@ -172,7 +172,7 @@ URL: https://atom-builder.vercel.app
 
 **スレッド返信:**
 > iPhoneでもAndroidでも遊べます
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 
 ---
 
@@ -191,7 +191,7 @@ URL: https://atom-builder.vercel.app
 
 **スレッド返信:**
 > 作ったきっかけ: 「スイカゲームの仕組みで理科の勉強になるやつ作りたい」
-> https://atom-builder.vercel.app
+> https://genso-drop.vercel.app
 
 ---
 
