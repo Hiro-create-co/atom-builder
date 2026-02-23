@@ -1,5 +1,5 @@
-// Atom Builder Service Worker — Offline support
-const CACHE_NAME = 'atom-builder-v2';
+// 元素ドロップ Service Worker — Offline support
+const CACHE_NAME = 'genso-drop-v1';
 const ASSETS = [
     './',
     './index.html',

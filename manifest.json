@@ -1,7 +1,7 @@
 {
-  "name": "Atom Builder - 原子ビルダー",
-  "short_name": "Atom Builder",
-  "description": "粒子を落として元素を作ろう！ Drop particles and build atoms!",
+  "name": "元素ドロップ - Genso Drop",
+  "short_name": "元素ドロップ",
+  "description": "粒子を落として元素を作ろう！ Drop particles and build elements!",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",

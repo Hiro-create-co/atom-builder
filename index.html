@@ -8,21 +8,21 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <!-- OGP -->
-<meta property="og:title" content="Atom Builder - 原子ビルダー">
-<meta property="og:description" content="粒子を落として元素を作ろう！ Drop particles and build atoms!">
+<meta property="og:title" content="元素ドロップ - Genso Drop">
+<meta property="og:description" content="粒子を落として元素を作ろう！ Drop particles and build elements!">
 <meta property="og:image" content="https://atom-builder.vercel.app/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://atom-builder.vercel.app">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Atom Builder">
+<meta property="og:site_name" content="元素ドロップ">
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Atom Builder - 原子ビルダー">
-<meta name="twitter:description" content="粒子を落として元素を作ろう！ Drop particles and build atoms!">
+<meta name="twitter:title" content="元素ドロップ - Genso Drop">
+<meta name="twitter:description" content="粒子を落として元素を作ろう！ Drop particles and build elements!">
 <meta name="twitter:image" content="https://atom-builder.vercel.app/og-image.png">
 <link rel="manifest" href="manifest.json">
-<title>Atom Builder - 原子ビルダー</title>
+<title>元素ドロップ - Genso Drop</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
 
@@ -156,8 +156,9 @@ html, body {
 
 /* ─── Menu Screen ─── */
 #menu-overlay h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 36px; font-weight: 900;
+    font-family: -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    font-size: 40px; font-weight: 900;
+    letter-spacing: 4px;
     background: linear-gradient(135deg, #ff4466, #4488ff, #44ff88, #ffdd44);
     background-size: 200% 200%;
     animation: gradientShift 4s ease infinite;
@@ -406,7 +407,7 @@ html, body {
 
     <!-- Menu -->
     <div class="overlay" id="menu-overlay">
-        <h1>Atom Builder</h1>
+        <h1>元素ドロップ</h1>
         <div class="sub">粒子を落として元素を作ろう！</div>
         <div class="sub" style="color:#556;font-size:12px;">Drop particles and build elements!</div>
         <div class="legend">
@@ -2379,7 +2380,7 @@ async function shareScore() {
     const maxLvName = GS.maxLevelReached < CHAIN.length ? CHAIN[GS.maxLevelReached].nameJa : '?';
     const levelBar = CHAIN.slice(0, GS.maxLevelReached + 1).map(c => c.symbol).join(' → ');
     const text = [
-        '⚛️ Atom Builder',
+        '⚛️ 元素ドロップ',
         `Score: ${GS.score}`,
         `Max: ${maxLvSym} (${maxLvName})`,
         levelBar,
